@@ -83,38 +83,59 @@ def get_questions_by_difficulty(difficulty):
 # QUESTION BANK FLASK ROUTES
 # ==========================================
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+def find_static_dir():
+    candidates = [
+        os.path.dirname(os.path.abspath(__file__)),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), '..')),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'InterviewPrep'))
+    ]
+    for c in candidates:
+        if os.path.exists(os.path.join(c, 'index.html')):
+            return c
+    return os.path.dirname(os.path.abspath(__file__))
+
+BASE_DIR = find_static_dir()
 
 @app.route('/', methods=['GET'])
-def home():
-    if request.headers.get('Accept') and 'text/html' in request.headers.get('Accept') and not request.is_json:
-        return send_from_directory(BASE_DIR, 'index.html')
-    return jsonify({"message": "InterviewPrep Backend Running"})
-
-
 @app.route('/index.html', methods=['GET'])
-def serve_index():
+@app.route('/api', methods=['GET'])
+@app.route('/api/', methods=['GET'])
+@app.route('/api/index', methods=['GET'])
+@app.route('/api/index.py', methods=['GET'])
+def home():
+    if request.headers.get('Accept') and 'application/json' in request.headers.get('Accept') and not ('text/html' in request.headers.get('Accept')):
+        return jsonify({"message": "InterviewPrep Backend Running"})
     return send_from_directory(BASE_DIR, 'index.html')
 
 
 @app.route('/style.css', methods=['GET'])
+@app.route('/api/style.css', methods=['GET'])
 def serve_css():
     return send_from_directory(BASE_DIR, 'style.css')
 
 
 @app.route('/script.js', methods=['GET'])
+@app.route('/api/script.js', methods=['GET'])
 def serve_js():
     return send_from_directory(BASE_DIR, 'script.js')
 
 
+@app.route('/questions.json', methods=['GET'])
+@app.route('/api/questions.json', methods=['GET'])
+def serve_questions_json():
+    return send_from_directory(BASE_DIR, 'questions.json')
+
+
 # 1. GET /questions -> Get all questions
 @app.route('/questions', methods=['GET'])
+@app.route('/api/questions', methods=['GET'])
 def get_questions():
     return jsonify(get_all_questions())
 
 
 # 2. GET /questions/<id> -> Get one question
 @app.route('/questions/<int:id>', methods=['GET'])
+@app.route('/api/questions/<int:id>', methods=['GET'])
 def get_question_by_id_route(id):
     question = get_question_by_id(id)
     if question:
@@ -124,18 +145,21 @@ def get_question_by_id_route(id):
 
 # 3. GET /questions/stack/<tech_stack> -> Get questions for a selected tech stack
 @app.route('/questions/stack/<tech_stack>', methods=['GET'])
+@app.route('/api/questions/stack/<tech_stack>', methods=['GET'])
 def get_by_tech_stack_route(tech_stack):
     return jsonify(get_questions_by_tech_stack(tech_stack))
 
 
 # 4. GET /questions/topic/<topic> -> Get questions for a selected topic
 @app.route('/questions/topic/<topic>', methods=['GET'])
+@app.route('/api/questions/topic/<topic>', methods=['GET'])
 def get_by_topic_route(topic):
     return jsonify(get_questions_by_topic(topic))
 
 
 # 5. GET /questions/difficulty/<difficulty> -> Get questions for a selected difficulty
 @app.route('/questions/difficulty/<difficulty>', methods=['GET'])
+@app.route('/api/questions/difficulty/<difficulty>', methods=['GET'])
 def get_by_difficulty_route(difficulty):
     return jsonify(get_questions_by_difficulty(difficulty))
 
@@ -146,6 +170,7 @@ def get_by_difficulty_route(difficulty):
 
 # --- Practice History APIs (Linked List) ---
 @app.route('/practice', methods=['POST'])
+@app.route('/api/practice', methods=['POST'])
 def add_practice():
     data = request.get_json() or {}
     history_list.append(data)
@@ -153,12 +178,14 @@ def add_practice():
 
 
 @app.route('/history', methods=['GET'])
+@app.route('/api/history', methods=['GET'])
 def get_history():
     return jsonify(history_list.get_all())
 
 
 # --- Previous Question APIs (Stack) ---
 @app.route('/visit', methods=['POST'])
+@app.route('/api/visit', methods=['POST'])
 def visit_question():
     data = request.get_json() or {}
     question_id = data.get("question_id")
@@ -169,6 +196,7 @@ def visit_question():
 
 
 @app.route('/previous', methods=['GET'])
+@app.route('/api/previous', methods=['GET'])
 def get_previous_question():
     item = previous_stack.pop()
     if item is None:
@@ -177,6 +205,7 @@ def get_previous_question():
 
 
 @app.route('/current', methods=['GET'])
+@app.route('/api/current', methods=['GET'])
 def get_current_question():
     item = previous_stack.peek()
     if item is None:
@@ -186,6 +215,7 @@ def get_current_question():
 
 # --- Mock Interview APIs (Queue) ---
 @app.route('/interview/start', methods=['POST'])
+@app.route('/api/interview/start', methods=['POST'])
 def start_interview():
     global mock_queue, mock_score
     mock_queue = Queue()
@@ -204,6 +234,7 @@ def start_interview():
 
 
 @app.route('/interview/next', methods=['GET'])
+@app.route('/api/interview/next', methods=['GET'])
 def next_interview_question():
     question = mock_queue.dequeue()
     if question is None:
@@ -212,6 +243,7 @@ def next_interview_question():
 
 
 @app.route('/interview/answer', methods=['POST'])
+@app.route('/api/interview/answer', methods=['POST'])
 def answer_interview_question():
     global mock_score
     data = request.get_json() or {}
@@ -221,6 +253,7 @@ def answer_interview_question():
 
 
 @app.route('/interview/result', methods=['GET'])
+@app.route('/api/interview/result', methods=['GET'])
 def interview_result():
     return jsonify({"score": mock_score, "total": 5})
 

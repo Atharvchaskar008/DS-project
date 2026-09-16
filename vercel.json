@@ -1,31 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/questions(.*)",
-      "destination": "/api/index.py"
-    },
-    {
-      "source": "/practice(.*)",
-      "destination": "/api/index.py"
-    },
-    {
-      "source": "/history(.*)",
-      "destination": "/api/index.py"
-    },
-    {
-      "source": "/visit(.*)",
-      "destination": "/api/index.py"
-    },
-    {
-      "source": "/current(.*)",
-      "destination": "/api/index.py"
-    },
-    {
-      "source": "/previous(.*)",
-      "destination": "/api/index.py"
-    },
-    {
-      "source": "/interview(.*)",
+      "source": "/(.*)",
       "destination": "/api/index.py"
     }
   ]
