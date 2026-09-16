@@ -1,7 +1,36 @@
 {
+  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/questions",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/questions/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/practice",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/history",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/visit",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/current",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/previous",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/interview/(.*)",
       "destination": "/api/index.py"
     }
   ]
