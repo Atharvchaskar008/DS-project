@@ -1,15 +1,8 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "InterviewPrep/app.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "InterviewPrep/app.py"
+      "source": "/(.*)",
+      "destination": "/api/index.py"
     }
   ]
 }
