@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InterviewPrep — Technical Interview Preparation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <h1>InterviewPrep</h1>
+            <span class="subtitle">Interview Preparation Platform</span>
+        </div>
+        <div class="nav-center">
+            <button class="nav-link active" data-target="practice-section">Practice</button>
+            <button class="nav-link" data-target="interview-section">Mock Interview</button>
+            <button class="nav-link" data-target="history-section">History</button>
+        </div>
+        <div class="nav-right">
+            <button class="theme-toggle" id="theme-toggle" title="Toggle Light / Dark mode">🌓 Mode</button>
+            <span class="status-indicator" id="backend-status">Backend Online</span>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- PRACTICE SECTION -->
+        <section id="practice-section" class="active-section">
+            <header class="hero">
+                <h2>Prepare smarter.<br>Interview better.</h2>
+                <p>Practice technical interview questions across the technologies you use.</p>
+            </header>
+
+            <div class="tech-stack-selection">
+                <h3>Choose your stack</h3>
+                <div class="stack-chips" id="stack-chips">
+                    <button class="chip selected" data-stack="All">All Stacks</button>
+                    <button class="chip" data-stack="MERN">MERN</button>
+                    <button class="chip" data-stack="Frontend">Frontend</button>
+                    <button class="chip" data-stack="Backend">Backend</button>
+                    <button class="chip" data-stack="Python">Python</button>
+                    <button class="chip" data-stack="SQL">SQL</button>
+                    <button class="chip" data-stack="Java">Java</button>
+                    <button class="chip" data-stack="DSA">DSA</button>
+                </div>
+            </div>
+
+            <div class="question-section" id="question-section">
+                <div class="question-header">
+                    <h3>Questions</h3>
+                    <span class="metadata" id="question-meta">Loading questions...</span>
+                </div>
+                
+                <div class="filters">
+                    <button class="filter-btn active" data-diff="All">All</button>
+                    <button class="filter-btn" data-diff="Easy">Easy</button>
+                    <button class="filter-btn" data-diff="Medium">Medium</button>
+                    <button class="filter-btn" data-diff="Hard">Hard</button>
+                </div>
+
+                <!-- Navigation for Stack (Previous/Current Question) -->
+                <div class="question-nav">
+                    <button class="secondary-btn" id="btn-previous">← Previous Visited Question</button>
+                    <span id="current-question-label">Recent: None</span>
+                </div>
+
+                <div class="questions-list" id="questions-list">
+                    <div class="loading-state">Loading questions from Question Bank...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MOCK INTERVIEW SECTION -->
+        <section id="interview-section" style="display: none;">
+            <header class="hero" id="interview-hero">
+                <h2>Mock Interview</h2>
+                <p>5 questions. One session. No distractions.</p>
+                <div style="margin-top: 1.5rem;">
+                    <button class="primary-btn" id="btn-start-interview">Start Interview Session</button>
+                </div>
+            </header>
+
+            <div id="interview-active" style="display: none;">
+                <div class="progress" id="interview-progress">Question 1 / 5</div>
+                
+                <div class="card interview-card">
+                    <h3 id="interview-question-text" style="font-size: 1.2rem; margin-bottom: 1rem;">Loading...</h3>
+                    <div class="meta-row">
+                        <span class="tag" id="interview-stack"></span>
+                        <span class="tag" id="interview-topic"></span>
+                        <span class="tag" id="interview-diff"></span>
+                    </div>
+                </div>
+
+                <div class="answer-area">
+                    <textarea placeholder="Type your answer notes or self-response here..." rows="5"></textarea>
+                    <div class="action-buttons">
+                        <button class="primary-btn" onclick="submitInterviewAnswer(true)">Mark Correct (Score +1)</button>
+                        <button class="secondary-btn" onclick="submitInterviewAnswer(false)">Mark Incorrect</button>
+                        <button class="secondary-btn" onclick="skipInterviewQuestion()">Skip</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="interview-result" style="display: none;" class="result-screen">
+                <h2>Interview Complete</h2>
+                <p>Here is your mock interview performance summary</p>
+                <div class="score-display">
+                    <span class="score" id="final-score">0 / 5</span>
+                    <span class="score-label">Correct Answers</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="primary-btn" id="btn-practice-again">Practice Again</button>
+                    <button class="secondary-btn" id="btn-back-to-questions">Back to Questions</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORY SECTION -->
+        <section id="history-section" style="display: none;">
+            <header class="hero">
+                <h2>Practice History</h2>
+                <p>Review questions stored dynamically in your practice Linked List.</p>
+            </header>
+
+            <div class="history-list" id="history-list">
+                <div class="loading-state">Loading your practice history...</div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
