@@ -1,5 +1,12 @@
-import json
 import os
+import sys
+
+# Ensure this directory is in sys.path so Vercel can find local modules
+API_DIR = os.path.dirname(os.path.abspath(__file__))
+if API_DIR not in sys.path:
+    sys.path.insert(0, API_DIR)
+
+import json
 import random
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
