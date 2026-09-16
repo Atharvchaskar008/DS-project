@@ -76,26 +76,28 @@ def get_questions_by_difficulty(difficulty):
 # QUESTION BANK FLASK ROUTES
 # ==========================================
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 @app.route('/', methods=['GET'])
 def home():
     if request.headers.get('Accept') and 'text/html' in request.headers.get('Accept') and not request.is_json:
-        return send_from_directory('.', 'index.html')
+        return send_from_directory(BASE_DIR, 'index.html')
     return jsonify({"message": "InterviewPrep Backend Running"})
 
 
 @app.route('/index.html', methods=['GET'])
 def serve_index():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory(BASE_DIR, 'index.html')
 
 
 @app.route('/style.css', methods=['GET'])
 def serve_css():
-    return send_from_directory('.', 'style.css')
+    return send_from_directory(BASE_DIR, 'style.css')
 
 
 @app.route('/script.js', methods=['GET'])
 def serve_js():
-    return send_from_directory('.', 'script.js')
+    return send_from_directory(BASE_DIR, 'script.js')
 
 
 # 1. GET /questions -> Get all questions
