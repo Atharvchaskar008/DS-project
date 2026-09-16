@@ -146,16 +146,6 @@ Visit **`http://127.0.0.1:5000`** in your browser.
 
 ---
 
-## 🎓 Viva & Evaluator Q&A Guide (For College Presentation)
-
-**Q1: Why did you use a Linked List for Practice History instead of an Array?**
-> *"An Array requires contiguous memory allocation and dynamic resizing when elements grow beyond its initial capacity. A Singly Linked List allocates memory on-demand node by node, which is ideal for history logs where records are continuously appended."*
-
-**Q2: Why did you choose a Stack for recent question navigation?**
-> *"A Stack operates on the LIFO (Last In, First Out) principle. When a user explores multiple questions in sequence ($Q_1 \to Q_5 \to Q_{10}$), clicking 'Previous' must take them to the most recently opened question ($Q_{10}$) first, which is identical to the call-stack behavior in web browsers."*
-
-**Q3: How does the Queue demonstrate FIFO in the Mock Interview?**
-> *"In a real-world interview session, questions must be answered in the strict order they were scheduled. When the session starts, questions are enqueued. As the candidate proceeds, questions are dequeued one-by-one from the front of the queue, ensuring first-in questions are served first."*
 
 ---
 
