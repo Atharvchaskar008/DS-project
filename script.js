@@ -644,6 +644,18 @@ async function updateCurrentQuestion() {
 }
 
 // --- Mock Interview (Queue / FIFO) ---
+let selectedInterviewDomain = "MERN";
+let interviewTotalQuestions = 5;
+
+// Listen for domain selection in mock interview
+document.addEventListener('click', (e) => {
+    if (e.target.matches('#interview-domain-chips .chip')) {
+        document.querySelectorAll('#interview-domain-chips .chip').forEach(c => c.classList.remove('selected'));
+        e.target.classList.add('selected');
+        selectedInterviewDomain = e.target.getAttribute('data-interview-domain');
+    }
+});
+
 const btnStartInterview = document.getElementById('btn-start-interview');
 if (btnStartInterview) {
     btnStartInterview.addEventListener('click', async () => {
@@ -655,13 +667,26 @@ if (btnStartInterview) {
         localMockScore = 0;
         localMockQueue = new ClientQueue();
         
-        // Initialize client Queue with 5 questions
-        const shuffled = [...allQuestionsCache].sort(() => 0.5 - Math.random());
-        const chosen = shuffled.slice(0, 5);
+        // Filter questions exclusively by the selected interview domain
+        let eligible = allQuestionsCache;
+        if (selectedInterviewDomain && selectedInterviewDomain !== 'All') {
+            eligible = allQuestionsCache.filter(q => q.tech_stack.toLowerCase() === selectedInterviewDomain.toLowerCase());
+        }
+        
+        const count = Math.min(5, eligible.length);
+        interviewTotalQuestions = count;
+        
+        // Initialize client Queue with domain-specific questions
+        const shuffled = [...eligible].sort(() => 0.5 - Math.random());
+        const chosen = shuffled.slice(0, count);
         chosen.forEach(q => localMockQueue.enqueue(q));
 
         try {
-            await fetch(`${API_URL}/interview/start`, { method: 'POST' });
+            await fetch(`${API_URL}/interview/start`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ tech_stack: selectedInterviewDomain })
+            });
         } catch (err) {}
 
         fetchNextInterviewQuestion();
@@ -675,7 +700,8 @@ async function fetchNextInterviewQuestion() {
     const topicEl = document.getElementById('interview-topic');
     const diffEl = document.getElementById('interview-diff');
     
-    if (progressEl) progressEl.innerText = `Question ${currentInterviewQ} of 5`;
+    const domainLabel = selectedInterviewDomain === 'All' ? 'All Domains' : `${selectedInterviewDomain} Domain`;
+    if (progressEl) progressEl.innerText = `Question ${currentInterviewQ} of ${interviewTotalQuestions} · ${domainLabel}`;
     
     let q = null;
     try {
@@ -718,7 +744,7 @@ async function submitInterviewAnswer(isCorrect) {
     } catch(err) {}
     
     currentInterviewQ++;
-    if (currentInterviewQ > 5) {
+    if (currentInterviewQ > interviewTotalQuestions) {
         showInterviewResult();
     } else {
         fetchNextInterviewQuestion();
@@ -734,20 +760,22 @@ async function showInterviewResult() {
     document.getElementById('interview-result').style.display = 'block';
     
     let score = localMockScore;
-    let total = 5;
+    let total = interviewTotalQuestions;
 
     try {
         const res = await fetch(`${API_URL}/interview/result`);
         if (res.ok) {
             const data = await res.json();
             if (data.score !== undefined) score = data.score;
+            if (data.total !== undefined) total = data.total;
         }
     } catch(err) {}
 
-    const pct = Math.round((score / total) * 100);
+    const pct = total > 0 ? Math.round((score / total) * 100) : 0;
     document.getElementById('final-score').innerText = `${score} / ${total}`;
     const label = document.querySelector('.score-label');
-    if (label) label.innerText = `Correct Answers (${pct}% Accuracy)`;
+    const domainLabel = selectedInterviewDomain === 'All' ? 'All Domains' : selectedInterviewDomain;
+    if (label) label.innerText = `Correct Answers (${domainLabel} Domain · ${pct}% Accuracy)`;
 }
 
 const btnPracticeAgain = document.getElementById('btn-practice-again');
@@ -820,15 +848,7 @@ async function loadHistory() {
 
 // --- Status Indicator Helper ---
 function updateBackendStatus(online) {
-    const el = document.getElementById('backend-status');
-    if (!el) return;
-    if (online) {
-        el.innerText = "Backend Online";
-        el.style.color = "var(--text-muted)";
-    } else {
-        el.innerText = "Backend Offline";
-        el.style.color = "#DC2626";
-    }
+    // Clean production status - no local dev indicator
 }
 
 // --- HTML Escaping for Safety ---

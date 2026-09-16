@@ -178,22 +178,36 @@ def get_current_question():
 
 
 # --- Mock Interview APIs (Queue) ---
+mock_interview_total = 5
+mock_interview_domain = "All Domains"
+
 @app.route('/interview/start', methods=['POST'])
 def start_interview():
-    global mock_queue, mock_score
+    global mock_queue, mock_score, mock_interview_total, mock_interview_domain
     mock_queue = Queue()
     mock_score = 0
+    data = request.get_json() or {}
+    domain = data.get("tech_stack") or request.args.get("tech_stack")
     
-    # Pick 5 random questions from the bank
-    if len(question_bank) >= 5:
-        selected_questions = random.sample(question_bank, 5)
+    if domain and domain.lower() != 'all':
+        mock_interview_domain = domain
+        eligible_questions = [q for q in question_bank if q["tech_stack"].lower() == domain.lower()]
     else:
-        selected_questions = question_bank
+        mock_interview_domain = "All Domains"
+        eligible_questions = question_bank
+        
+    count = min(5, len(eligible_questions))
+    mock_interview_total = count
+    selected_questions = random.sample(eligible_questions, count) if len(eligible_questions) >= count else eligible_questions
         
     for q in selected_questions:
         mock_queue.enqueue(q)
         
-    return jsonify({"message": "Mock interview started with 5 questions"}), 201
+    return jsonify({
+        "message": f"Mock interview started with {count} questions for {mock_interview_domain}",
+        "total": count,
+        "domain": mock_interview_domain
+    }), 201
 
 
 @app.route('/interview/next', methods=['GET'])
@@ -215,7 +229,11 @@ def answer_interview_question():
 
 @app.route('/interview/result', methods=['GET'])
 def interview_result():
-    return jsonify({"score": mock_score, "total": 5})
+    return jsonify({
+        "score": mock_score,
+        "total": mock_interview_total,
+        "domain": mock_interview_domain
+    })
 
 
 if __name__ == '__main__':

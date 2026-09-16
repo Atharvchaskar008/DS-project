@@ -19,7 +19,6 @@
         </div>
         <div class="nav-right">
             <button class="theme-toggle" id="theme-toggle" title="Toggle Light / Dark mode">🌓 Mode</button>
-            <span class="status-indicator" id="backend-status">Backend Online</span>
         </div>
     </nav>
 
@@ -74,7 +73,20 @@
         <section id="interview-section" style="display: none;">
             <header class="hero" id="interview-hero">
                 <h2>Mock Interview</h2>
-                <p>5 questions. One session. No distractions.</p>
+                <p>5 domain-focused questions. One session. No distractions.</p>
+                <div class="interview-domain-selection" style="margin-top: 1.5rem;">
+                    <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em;">Select Interview Domain</label>
+                    <div class="stack-chips" id="interview-domain-chips">
+                        <button class="chip selected" data-interview-domain="MERN">MERN</button>
+                        <button class="chip" data-interview-domain="Frontend">Frontend</button>
+                        <button class="chip" data-interview-domain="Backend">Backend</button>
+                        <button class="chip" data-interview-domain="Python">Python</button>
+                        <button class="chip" data-interview-domain="SQL">SQL</button>
+                        <button class="chip" data-interview-domain="Java">Java</button>
+                        <button class="chip" data-interview-domain="DSA">DSA</button>
+                        <button class="chip" data-interview-domain="All">All Domains</button>
+                    </div>
+                </div>
                 <div style="margin-top: 1.5rem;">
                     <button class="primary-btn" id="btn-start-interview">Start Interview Session</button>
                 </div>
